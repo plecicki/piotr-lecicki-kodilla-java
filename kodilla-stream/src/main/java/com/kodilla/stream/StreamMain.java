@@ -1,28 +1,29 @@
 package com.kodilla.stream;
 
-import com.kodilla.stream.beautifier.PoemBeautifier;
-import com.kodilla.stream.beautifier.PoemDecorator;
-import com.kodilla.stream.iterate.NumbersGenerator;
-import com.kodilla.stream.lambda.ExecuteSaySomething;
-import com.kodilla.stream.lambda.ExpressionExecutor;
-import com.kodilla.stream.lambda.Processor;
-import com.kodilla.stream.lambda.SaySomething;
-import com.kodilla.stream.reference.FunctionalCalculator;
+import com.kodilla.stream.forumuser.Forum;
+import com.kodilla.stream.forumuser.ForumUser;
 
-import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StreamMain {
 
     public static void main(String[] args) {
 
-        PoemBeautifier poemBeautifier = new PoemBeautifier();
-        String yourText = "Hello World";
-        poemBeautifier.beautify(yourText, text -> "ABC" + text + "ABC");
-        poemBeautifier.beautify(yourText, text -> text.toUpperCase());
-        poemBeautifier.beautify(yourText, text -> text.length() + " " + text + " " + text.length());
-        poemBeautifier.beautify(yourText, text -> "?" + text.toUpperCase() + " " + text.toLowerCase() + "?");
+        Forum theForum = new Forum();
+        Map<Integer, ForumUser> theResultMapOfUsers = theForum.getUserList().stream()
+                .filter(forumUser -> forumUser.getSex() == 'M')
+                .filter(forumUser -> (forumUser.getDateOfBirth().getYear() < 2002) ||
+                        ((forumUser.getDateOfBirth().getYear() == 2002) &&
+                                (forumUser.getDateOfBirth().getMonthValue() < 4)) ||
+                        ((forumUser.getDateOfBirth().getYear() == 2002) &&
+                                (forumUser.getDateOfBirth().getMonthValue() == 4) &&
+                                (forumUser.getDateOfBirth().getDayOfMonth() <= 13)))
+                .filter(forumUser -> forumUser.getPostsCount() >= 1)
+                .collect(Collectors.toMap(ForumUser::getUserID, forumUser -> forumUser));
 
-        System.out.println("Using Stream to generate even numbers from 1 to 20");
-        NumbersGenerator.generateEven(20);
+        theResultMapOfUsers.entrySet().stream()
+                .map(entry -> entry.getKey() + " - " + entry.getValue())
+                .forEach(System.out::println);
     }
 }
