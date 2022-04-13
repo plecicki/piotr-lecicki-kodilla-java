@@ -4,6 +4,7 @@ import com.kodilla.stream.forumuser.Forum;
 import com.kodilla.stream.forumuser.ForumUser;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -14,12 +15,7 @@ public class StreamMain {
         Forum theForum = new Forum();
         Map<Integer, ForumUser> theResultMapOfUsers = theForum.getUserList().stream()
                 .filter(forumUser -> forumUser.getSex() == 'M')
-                .filter(forumUser -> (forumUser.getDateOfBirth().getYear() < LocalDate.now().getYear()) ||
-                        ((forumUser.getDateOfBirth().getYear() == LocalDate.now().getYear()) &&
-                                (forumUser.getDateOfBirth().getMonthValue() < LocalDate.now().getDayOfMonth())) ||
-                        ((forumUser.getDateOfBirth().getYear() == LocalDate.now().getYear()) &&
-                                (forumUser.getDateOfBirth().getMonthValue() == LocalDate.now().getMonthValue()) &&
-                                (forumUser.getDateOfBirth().getDayOfMonth() <= LocalDate.now().getDayOfMonth())))
+                .filter(forumUser -> Math.abs((Period.between(forumUser.getDateOfBirth(), LocalDate.now())).getYears()) >= 20)
                 .filter(forumUser -> forumUser.getPostsCount() >= 1)
                 .collect(Collectors.toMap(ForumUser::getUserID, forumUser -> forumUser));
 
