@@ -13,32 +13,18 @@ public class BreadDto implements Product{
     }
 
     @Override
-    public void buying(int boughtItems, Product product) {
+    public boolean buying(int boughtItems, Product product) {
         if (numberOfItems - boughtItems >= 0) {
             numberOfItems -= boughtItems;
             System.out.println("The operation was successful!");
-            CommunicationWithClient.communicate(product);
-        } else {
-            System.out.println("Operation is impossible\n");
+            return true;
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        System.out.println("Operation is impossible\n");
+        return false;
     }
 
     @Override
     public int getNumberOfItems() {
         return numberOfItems;
-    }
-
-    public boolean isTodayBaked() {
-        return todayBaked;
-    }
-
-    @Override
-    public String toString() {
-        return "Name: " + name + "\nFresh Baked: " + todayBaked;
     }
 }

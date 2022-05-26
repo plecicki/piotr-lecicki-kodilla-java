@@ -17,40 +17,18 @@ public class WristwatchDto implements Product {
     }
 
     @Override
-    public void buying(int boughtItems, Product product) {
+    public boolean buying(int boughtItems, Product product) {
         if (numberOfItems - boughtItems >= 0) {
             numberOfItems -= boughtItems;
             System.out.println("The operation was successful!");
-            CommunicationWithClient.communicate(product);
-        } else {
-            System.out.println("Operation is impossible\n");
+            return true;
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        System.out.println("Operation is impossible\n");
+        return false;
     }
 
     @Override
     public int getNumberOfItems() {
         return numberOfItems;
-    }
-
-    public char getColor() {
-        return color;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public String getTimeStyle() {
-        return timeStyle;
-    }
-
-    @Override
-    public String toString() {
-        return "Name: " + name + "\nColor: " + color + "\nProducer: " + producer + "\nTime Style: " + timeStyle;
     }
 }
