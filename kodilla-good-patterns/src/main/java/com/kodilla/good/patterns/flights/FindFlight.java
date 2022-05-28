@@ -15,7 +15,7 @@ public class FindFlight {
     public Set<FlightDto> findFlightsFrom(String cityFrom) {
         Set<FlightDto> foundFlights = flightSet
                 .stream()
-                .filter(flight -> flight.getFlightFrom() == cityFrom)
+                .filter(flight -> flight.getFlightFrom().equals(cityFrom))
                 .collect(Collectors.toSet());
         return foundFlights;
     }
@@ -23,7 +23,7 @@ public class FindFlight {
     public Set<FlightDto> findFlightsTo(String cityTo) {
         Set<FlightDto> foundFlights = flightSet
                 .stream()
-                .filter(flight -> flight.getFlightTo() == cityTo)
+                .filter(flight -> flight.getFlightTo().equals(cityTo))
                 .collect(Collectors.toSet());
         return foundFlights;
     }
@@ -34,14 +34,14 @@ public class FindFlight {
 
         Set<FlightDto> foundFlights1 = flightSet
                 .stream()
-                .filter(flight -> flight.getFlightFrom() == cityFrom)
-                .filter(flight -> flight.getFlightTo() == cityThrough)
+                .filter(flight -> flight.getFlightFrom().equals(cityFrom))
+                .filter(flight -> flight.getFlightTo().equals(cityThrough))
                 .collect(Collectors.toSet());
 
         Set<FlightDto> foundFlights2 = flightSet
                 .stream()
-                .filter(flight -> flight.getFlightFrom() == cityThrough)
-                .filter(flight -> flight.getFlightTo() == cityTo)
+                .filter(flight -> flight.getFlightFrom().equals(cityThrough))
+                .filter(flight -> flight.getFlightTo().equals(cityTo))
                 .collect(Collectors.toSet());
 
         for (FlightDto flight1 : foundFlights1) {
