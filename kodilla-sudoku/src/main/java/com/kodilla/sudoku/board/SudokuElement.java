@@ -7,6 +7,10 @@ public class SudokuElement {
 
     public static int EMPTY = -1;
 
+    public SudokuElement() {
+        this.number = EMPTY;
+    }
+
     public int getNumber() {
         return number;
     }

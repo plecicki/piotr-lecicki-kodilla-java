@@ -7,6 +7,12 @@ public class SudokuBoard {
 
     private List<SudokuRow> rows = new ArrayList<>();
 
+    public SudokuBoard() {
+        for (int i=0; i<9; i++) {
+            rows.add(new SudokuRow());
+        }
+    }
+
     public List<SudokuRow> getRows() {
         return rows;
     }
@@ -29,6 +35,6 @@ public class SudokuBoard {
                 "---------------------\n" +
                 "| | | || | | || | | |\n" +
                 "| | | || | | || | | |\n" +
-                "| | | || | | || | | |\n";
+                "| | | || | | || | | |";
     }
 }
