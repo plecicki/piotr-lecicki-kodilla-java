@@ -1,5 +1,6 @@
 package com.kodilla.sudoku;
 
+import com.kodilla.sudoku.algorithm.FindSolution;
 import com.kodilla.sudoku.board.SudokuBoard;
 import com.kodilla.sudoku.display.Display;
 
@@ -19,6 +20,7 @@ public class SudokuGame {
 
         SudokuBoard sudokuBoard = new SudokuBoard();
         Display display = new Display(sudokuBoard.toString());
+        FindSolution findSolution = new FindSolution();
 
         System.out.println("SUDOKU ALGORITHM");
         System.out.println(display);
@@ -39,6 +41,7 @@ public class SudokuGame {
             enteredValue = choice.nextLine();
             if (enteredValue.equals("SUDOKU") || enteredValue.equals("sudoku")) {
                 enteredAllNumbers = true;
+                findSolution.start(sudokuBoard);
             } else {
                 enteredValue = enteredValue.replaceAll("([a-zA-Z\\W\\s+])", "");
                 System.out.println(enteredValue);
