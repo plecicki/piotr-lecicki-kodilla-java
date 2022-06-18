@@ -15,7 +15,7 @@ public class Display {
             for (int j=0; j<3; j++) {
                 for (int k=0; k<3; k++) {
                     for (int l=0; l<3; l++) {
-                        charIndex[i*3+k][j+3*l] = 88*i+2*j+22*k+7*l+1;
+                        charIndex[i*3+k][3*l+j] = 88*i+2*j+22*k+7*l+1;
                     }
                 }
             }
