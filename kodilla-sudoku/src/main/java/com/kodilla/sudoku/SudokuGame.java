@@ -41,7 +41,7 @@ public class SudokuGame {
             enteredValue = choice.nextLine();
             if (enteredValue.equals("SUDOKU") || enteredValue.equals("sudoku")) {
                 enteredAllNumbers = true;
-                findSolution.start(sudokuBoard);
+                findSolution.start(sudokuBoard, display);
             } else {
                 enteredValue = enteredValue.replaceAll("([a-zA-Z\\W\\s+])", "");
                 System.out.println(enteredValue);

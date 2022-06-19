@@ -1,13 +1,16 @@
 package com.kodilla.sudoku.algorithm;
 
 import com.kodilla.sudoku.board.SudokuBoard;
+import com.kodilla.sudoku.display.Display;
 
 public class FindSolution {
 
     private SudokuBoard sudokuBoard;
+    private Display display;
 
-    public void start(SudokuBoard sudokuBoard) {
+    public void start(SudokuBoard sudokuBoard, Display display) {
         this.sudokuBoard = sudokuBoard;
+        this.display = display;
         algorithmLoop();
     }
 
@@ -16,6 +19,7 @@ public class FindSolution {
         while (!solved) {
             solved = !elementsIterate();
         }
+        System.out.println(display);
     }
 
     private boolean elementsIterate() {
@@ -43,6 +47,7 @@ public class FindSolution {
                         elementNumber = findAvailableNumber(rowLoop, columnLoop);
                         //Write number to object
                         sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).setNumber(elementNumber);
+                        display.writeNumber(rowLoop, columnLoop, elementNumber);
                     }
                     //todo Guesting
                 }
@@ -72,7 +77,6 @@ public class FindSolution {
     private int findAvailableNumber(int row, int column) {
         for (int i=0; i<9; i++) {
             if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[i] == i+1) {
-                sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[i] = -1;
                 return i+1;
             }
         }
@@ -109,7 +113,7 @@ public class FindSolution {
     private void checkBlock(int row, int column, int blockIndex) {
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
-                boolean sameBlock = checkBlockIndex(i, j) == blockIndex;
+                boolean sameBlock = (checkBlockIndex(i, j) == blockIndex);
                 if (sameBlock && !(i == row && j == column)) {
                     int othersNumber = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
                     if (othersNumber != -1) {

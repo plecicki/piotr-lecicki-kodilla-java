@@ -17,11 +17,6 @@ public class SudokuBoard {
         return rows;
     }
 
-    public void writeNumber(int rowIndex, int elementIndex, int number) {
-        rows.get(rowIndex).getElements().get(elementIndex).setNumber(number);
-        rows.get(rowIndex).getElements().get(elementIndex).setPossibleNumbers(number);
-    }
-
     @Override
     public String toString() {
         return
