@@ -25,22 +25,22 @@ public class SudokuTestSuite {
         Assertions.assertEquals(9, lastNumber);
     }
 
-//    @Test
-//    void check0Block() {
-//        //Given
-//        fillBoard0BlockWithoutLastElement();
-//        FindSolution findSolution = new FindSolution();
-//
-//        //When
-//        findSolution.start(sudokuBoard, display);
-//        System.out.println(sudokuBoard.getRows().get(2).getElements().get(0).getNumber());
-//        System.out.println(sudokuBoard.getRows().get(2).getElements().get(1).getNumber());
-//
-//
-//        //Then
-//        int lastNumber = sudokuBoard.getRows().get(2).getElements().get(2).getNumber();
-//        Assertions.assertEquals(9, lastNumber);
-//    }
+    @Test
+    void check0Block() {
+        //Given
+        fillBoard0BlockWithoutLastElement();
+        FindSolution findSolution = new FindSolution();
+
+        //When
+        findSolution.start(sudokuBoard, display);
+        System.out.println(sudokuBoard.getRows().get(2).getElements().get(0).getNumber());
+        System.out.println(sudokuBoard.getRows().get(2).getElements().get(1).getNumber());
+
+
+        //Then
+        int lastNumber = sudokuBoard.getRows().get(2).getElements().get(2).getNumber();
+        Assertions.assertEquals(9, lastNumber);
+    }
 
 //    @Test
 //    void checkBlockIndexCheck() {

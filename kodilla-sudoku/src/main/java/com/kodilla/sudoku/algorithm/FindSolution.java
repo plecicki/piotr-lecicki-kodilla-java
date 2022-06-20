@@ -11,19 +11,19 @@ public class FindSolution {
     public boolean start(SudokuBoard sudokuBoard, Display display) {
         this.sudokuBoard = sudokuBoard;
         this.display = display;
-        //algorithmLoop();
-        System.out.println(this.display);
-        return elementsIterate();
+        boolean fullBoardIsFilled = singleGameLoop();
+        return fullBoardIsFilled;
     }
 
-//    private void algorithmLoop() {
-//        boolean solved = false;
-//        while (!solved) {
-//            solved = elementsIterate();
-//            //TODO solved = !elementsIterate();
-//        }
-//        System.out.println(display);
-//    }
+    private boolean singleGameLoop() {
+        boolean solved = false;
+        while (!solved) {
+            solved = !elementsIterate();
+            //TODO solved = elementsIterate();
+        }
+        System.out.println(display);
+        return solved;
+    }
 
     private boolean elementsIterate() {
         boolean isEveryElementFilled = true;
@@ -142,6 +142,19 @@ public class FindSolution {
                             impossibleNumbers[k] = k+1;
                         }
                     }
+                }
+            }
+        }
+        int loopCounter = 0;
+        for (int l=0; l<9; l++) {
+            if (impossibleNumbers[l] == -1) {
+                loopCounter++;
+            }
+        }
+        if (loopCounter == 1) {
+            for (int k=0; k<9; k++) {
+                if (impossibleNumbers[k] != -1) {
+                    sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[k] = -1;
                 }
             }
         }

@@ -14,11 +14,17 @@ public class SudokuGame {
     public static void main(String[] args) {
         boolean gameFinished = false;
         boolean unsolvable = false;
-        SudokuGame sudokuGame = new SudokuGame();
+
 
         while (!gameFinished && !unsolvable) {
 
-            gameFinished = sudokuGame.resolveSudoku();
+            if (!enteredAllNumbers) {
+                SudokuGame sudokuGame = new SudokuGame();
+                SudokuBoard sudokuBoard = new SudokuBoard();
+                Display display = new Display(sudokuBoard.toString());
+                FindSolution findSolution = new FindSolution();
+                gameFinished = sudokuGame.resolveSudoku(sudokuBoard, display, findSolution);
+            }
             //TODO Unsolvable = ...
             if (gameFinished) {
                 gameFinished = !Questions.sudokuFinished();
@@ -31,11 +37,7 @@ public class SudokuGame {
         }
     }
 
-    private boolean resolveSudoku() {
-
-        SudokuBoard sudokuBoard = new SudokuBoard();
-        Display display = new Display(sudokuBoard.toString());
-        FindSolution findSolution = new FindSolution();
+    private boolean resolveSudoku(SudokuBoard sudokuBoard, Display display, FindSolution findSolution) {
 
         System.out.println("SUDOKU ALGORITHM");
         System.out.println(display);
