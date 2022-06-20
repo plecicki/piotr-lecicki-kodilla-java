@@ -1,6 +1,8 @@
 package com.kodilla.sudoku.display;
 
-public class Display {
+import com.kodilla.sudoku.board.Prototype;
+
+public class Display extends Prototype<Display> {
 
     private String filledBoard;
     private int[][] charIndex = new int[9][9];
@@ -26,6 +28,12 @@ public class Display {
         char[] filledBoardChars = filledBoard.toCharArray();
         filledBoardChars[charIndex[row][column]] = Character.forDigit(number,10);
         filledBoard = String.valueOf(filledBoardChars);
+    }
+
+    public Display deepCopy() throws CloneNotSupportedException {
+        Display clonedDisplay = super.clone();
+        clonedDisplay.filledBoard = this.filledBoard;
+        return clonedDisplay;
     }
 
     public String toString() {
