@@ -3,7 +3,7 @@ package com.kodilla.sudoku.board;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SudokuBoard {
+public class SudokuBoard extends Prototype<SudokuBoard> {
 
     private List<SudokuRow> rows = new ArrayList<>();
 
@@ -15,6 +15,19 @@ public class SudokuBoard {
 
     public List<SudokuRow> getRows() {
         return rows;
+    }
+
+    public SudokuBoard deepCopy() throws CloneNotSupportedException {
+        SudokuBoard clonedSudokuBoard = super.clone();
+        clonedSudokuBoard.rows = new ArrayList<>();
+        for (SudokuRow row : rows) {
+            SudokuRow clonedRow = new SudokuRow();
+            for(SudokuElement element : row.getElements()) {
+                clonedRow.getElements().add(element);
+            }
+            clonedSudokuBoard.getRows().add(row);
+        }
+        return clonedSudokuBoard;
     }
 
     @Override

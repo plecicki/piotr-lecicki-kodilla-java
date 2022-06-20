@@ -24,6 +24,7 @@ public class SudokuGame {
                 Display display = new Display(sudokuBoard.toString());
                 FindSolution findSolution = new FindSolution();
                 gameFinished = sudokuGame.resolveSudoku(sudokuBoard, display, findSolution);
+                unsolvable = findSolution.isUnsolvable();
             }
             //TODO Unsolvable = ...
             if (gameFinished) {

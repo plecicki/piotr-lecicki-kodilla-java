@@ -6,7 +6,12 @@ import com.kodilla.sudoku.display.Display;
 public class FindSolution {
 
     private SudokuBoard sudokuBoard;
+    private SudokuBoard deepCopyBoard;
     private Display display;
+    private boolean unsolvable = false;
+    private boolean madeCopy = false;
+
+    private boolean wasSomethingDoneDuringThisIteration;
 
     public boolean start(SudokuBoard sudokuBoard, Display display) {
         this.sudokuBoard = sudokuBoard;
@@ -17,7 +22,8 @@ public class FindSolution {
 
     private boolean singleGameLoop() {
         boolean solved = false;
-        while (!solved) {
+        while (!solved && !unsolvable) {
+            wasSomethingDoneDuringThisIteration = false;
             solved = !elementsIterate();
             //TODO solved = elementsIterate();
         }
@@ -27,7 +33,7 @@ public class FindSolution {
 
     private boolean elementsIterate() {
         boolean isEveryElementFilled = true;
-        int elementNumber = -1;
+        int elementNumber;
         for (int rowLoop = 0; rowLoop < 9; rowLoop++) {
             for (int columnLoop = 0; columnLoop < 9; columnLoop++) {
                 if (isEmpty(rowLoop, columnLoop)) {
@@ -51,12 +57,31 @@ public class FindSolution {
                         //Write number to object
                         sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).setNumber(elementNumber);
                         display.writeNumber(rowLoop, columnLoop, elementNumber);
+                        wasSomethingDoneDuringThisIteration = true;
                     }
-                    //todo Guesting
                 }
             }
         }
+        if (!wasSomethingDoneDuringThisIteration) {
+            //TODO Guesting
+            if (!madeCopy) {
+                makeBoardCopy(deepCopyBoard, sudokuBoard);
+            } else {
+                //TODO Guess
+            }
+
+        }
+        //TODO Check collisions
         return isEveryElementFilled;
+    }
+
+    private void makeBoardCopy(SudokuBoard clone, SudokuBoard cloned) {
+        try {
+            clone = cloned.deepCopy();
+            madeCopy = true;
+        } catch (CloneNotSupportedException e) {
+            System.out.println(e);
+        }
     }
 
     private boolean isEmpty(int row, int column) {
@@ -90,6 +115,7 @@ public class FindSolution {
         othersNumber = sudokuBoard.getRows().get(i).getElements().get(column).getNumber();
         if (othersNumber != -1 && i != row) {
             sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+            wasSomethingDoneDuringThisIteration = true;
         }
     }
 
@@ -97,6 +123,7 @@ public class FindSolution {
         othersNumber = sudokuBoard.getRows().get(row).getElements().get(i).getNumber();
         if (othersNumber != -1 && i != column) {
             sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+            wasSomethingDoneDuringThisIteration = true;
         }
     }
 
@@ -121,6 +148,7 @@ public class FindSolution {
                     int othersNumber = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
                     if (othersNumber != -1) {
                         sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                        wasSomethingDoneDuringThisIteration = true;
                     }
                 }
             }
@@ -155,8 +183,13 @@ public class FindSolution {
             for (int k=0; k<9; k++) {
                 if (impossibleNumbers[k] != -1) {
                     sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[k] = -1;
+                    wasSomethingDoneDuringThisIteration = true;
                 }
             }
         }
+    }
+
+    public boolean isUnsolvable() {
+        return unsolvable;
     }
 }
