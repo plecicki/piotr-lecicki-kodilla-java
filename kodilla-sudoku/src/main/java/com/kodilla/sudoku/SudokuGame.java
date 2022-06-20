@@ -3,16 +3,31 @@ package com.kodilla.sudoku;
 import com.kodilla.sudoku.algorithm.FindSolution;
 import com.kodilla.sudoku.board.SudokuBoard;
 import com.kodilla.sudoku.display.Display;
+import com.kodilla.sudoku.display.Questions;
 
 import java.util.Scanner;
 
 public class SudokuGame {
 
+    private static boolean enteredAllNumbers = false;
+
     public static void main(String[] args) {
         boolean gameFinished = false;
-        while (!gameFinished) {
-            SudokuGame sudokuGame = new SudokuGame();
+        boolean unsolvable = false;
+        SudokuGame sudokuGame = new SudokuGame();
+
+        while (!gameFinished && !unsolvable) {
+
             gameFinished = sudokuGame.resolveSudoku();
+            //TODO Unsolvable = ...
+            if (gameFinished) {
+                gameFinished = !Questions.sudokuFinished();
+                enteredAllNumbers = false;
+            }
+            if (unsolvable) {
+                unsolvable = !Questions.sudokuUnsolvable();
+                enteredAllNumbers = false;
+            }
         }
     }
 
@@ -29,7 +44,6 @@ public class SudokuGame {
         System.out.println("Examples: (3, 4, 5), (3,4,5), (345), (3a4B!5) - min 3 digits");
         System.out.println("After all write \"SUDOKU\"");
 
-        boolean enteredAllNumbers = false;
         String enteredValue = "";
 
         int row = 0;
@@ -41,7 +55,6 @@ public class SudokuGame {
             enteredValue = choice.nextLine();
             if (enteredValue.equals("SUDOKU") || enteredValue.equals("sudoku")) {
                 enteredAllNumbers = true;
-                findSolution.start(sudokuBoard, display);
             } else {
                 enteredValue = enteredValue.replaceAll("([a-zA-Z\\W\\s+])", "");
                 System.out.println(enteredValue);
@@ -69,6 +82,6 @@ public class SudokuGame {
                 System.out.println(row + " " + column + " " + number);
             }
         }
-        return true; //TODO: SET LOGIC TO FINISH GAME
+        return findSolution.start(sudokuBoard, display);
     }
 }

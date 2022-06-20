@@ -8,19 +8,22 @@ public class FindSolution {
     private SudokuBoard sudokuBoard;
     private Display display;
 
-    public void start(SudokuBoard sudokuBoard, Display display) {
+    public boolean start(SudokuBoard sudokuBoard, Display display) {
         this.sudokuBoard = sudokuBoard;
         this.display = display;
-        algorithmLoop();
+        //algorithmLoop();
+        System.out.println(this.display);
+        return elementsIterate();
     }
 
-    private void algorithmLoop() {
-        boolean solved = false;
-        while (!solved) {
-            solved = !elementsIterate();
-        }
-        System.out.println(display);
-    }
+//    private void algorithmLoop() {
+//        boolean solved = false;
+//        while (!solved) {
+//            solved = elementsIterate();
+//            //TODO solved = !elementsIterate();
+//        }
+//        System.out.println(display);
+//    }
 
     private boolean elementsIterate() {
         boolean isEveryElementFilled = true;
@@ -58,7 +61,7 @@ public class FindSolution {
 
     private boolean isEmpty(int row, int column) {
         int number = sudokuBoard.getRows().get(row).getElements().get(column).getNumber();
-        return number == -1;
+        return (number == -1);
     }
 
     private boolean isTableHavingOnlyOneItem(int row, int column) {
