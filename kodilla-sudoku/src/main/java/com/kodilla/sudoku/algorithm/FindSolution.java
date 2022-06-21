@@ -11,27 +11,34 @@ public class FindSolution {
     private Display deepCopyDisplay;
     private boolean unsolvable = false;
     private boolean madeCopy = false;
+    private boolean[][][] wasGuessed = new boolean[9][9][9];
 
     private boolean wasSomethingDoneDuringThisIteration;
 
     public boolean start(SudokuBoard sudokuBoard, Display display) {
         this.sudokuBoard = sudokuBoard;
         this.display = display;
+        fillGuessTable();
         boolean fullBoardIsFilled = singleGameLoop();
         return fullBoardIsFilled;
     }
 
+    private void fillGuessTable() {
+        for (int i=0; i<9; i++) {
+            for (int j=0; j<9; j++) {
+                for (int k=0; k<9; k++) {
+                    wasGuessed[i][j][k] = false;
+                }
+            }
+        }
+    }
+
     private boolean singleGameLoop() {
         boolean solved = false;
-    //    for (int i=0; i<10; i++) {
-    //        solved = false; //TODO TO DELETE
-            while (!solved && !unsolvable) {
-                wasSomethingDoneDuringThisIteration = false;
-                solved = elementsIterate();
-                //TODO solved = elementsIterate(); DELETE FOR
-            }
-    //    }
-
+        while (!solved && !unsolvable) {
+            wasSomethingDoneDuringThisIteration = false;
+            solved = elementsIterate();
+        }
         System.out.println(display);
         return solved;
     }
@@ -43,23 +50,15 @@ public class FindSolution {
             for (int columnLoop = 0; columnLoop < 9; columnLoop++) {
                 if (isEmpty(rowLoop, columnLoop)) {
                     isEveryElementFilled = false;
-                    //Check rows and columns:
-                    int othersNumber = -1;
-                    for (int i=0; i<9; i++) {
-                        checkRows(rowLoop, columnLoop, othersNumber, i);
-                        checkColumns(rowLoop, columnLoop, othersNumber, i);
-                    }
                     int blockIndex = checkBlockIndex(rowLoop, columnLoop);
-                    checkBlock(rowLoop, columnLoop, blockIndex);
 
-                    //todo Check tables others [To check!!!] impossible numbers to iterate and calculate TO TEST
+                    checkRows(rowLoop, columnLoop);
+                    checkColumns(rowLoop, columnLoop);
+                    checkBlock(rowLoop, columnLoop, blockIndex);
                     checkOthersTables(rowLoop, columnLoop, blockIndex);
 
-                    //Is table has only one element:
                     if (isTableHavingOnlyOneItem(rowLoop, columnLoop)) {
-                        //Check this number:
                         elementNumber = findAvailableNumber(rowLoop, columnLoop);
-                        //Write number to object
                         sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).setNumber(elementNumber);
                         display.writeNumber(rowLoop, columnLoop, elementNumber);
                         wasSomethingDoneDuringThisIteration = true;
@@ -73,8 +72,7 @@ public class FindSolution {
                             } catch (CloneNotSupportedException e) {
                                 System.out.println(e);
                             }
-                            guess();
-                            //madeCopy = false;
+                            madeCopy = false;
                         } else {
                             unsolvable = true;
                         }
@@ -105,13 +103,11 @@ public class FindSolution {
             }
 
         }
-        //TODO Check collisions
         return isEveryElementFilled;
     }
 
     private boolean isCollision(int row, int column, int blockIndex) {
-        int number1 = 0;
-        int number2 = 0;
+        int number1;
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
                 boolean sameBlock = checkBlockIndex(i, j) == blockIndex;
@@ -119,12 +115,6 @@ public class FindSolution {
                         (column == j && row != i) ||
                         (column != j && row == i)) {
                     number1 = sudokuBoard.getRows().get(row).getElements().get(column).getNumber();
-//                    number2 = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
-//
-//                    if (number1 == number2 && number1 != -1) {
-//                        return true;
-//                    }
-
                     if (isTableHavingOnlyOneItem(i, j)) {
                         int availableNumber = findAvailableNumber(i, j);
                         if (availableNumber == number1 && number1 != -1) {
@@ -144,10 +134,16 @@ public class FindSolution {
                 for (int i=0; i<9; i++) {
                     if (isEmpty(rowGuess, columnGuess) && !isGuessed &&
                             sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] == i+1 &&
-                            sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] == false) {
-                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] = -1;
+                            wasGuessed[rowGuess][columnGuess][i] == false) {
+                        for (int j=0; j<9; j++) {
+                            if (j == i) {
+                                sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[j] = j+1;
+                            } else {
+                                sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[j] = -1;
+                            }
+                        }
                         sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).setNumber(i+1);
-                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] = true;
+                        wasGuessed[rowGuess][columnGuess][i] = true;
                         display.writeNumber(rowGuess, columnGuess, i+1);
                         isGuessed = true;
                     }
@@ -166,9 +162,14 @@ public class FindSolution {
                 for (int i=0; i<9; i++) {
                     if (isEmpty(rowGuess, columnGuess) && !isGuessed &&
                             sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] == i+1) {
-                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] = -1;
+                        for (int j=0; j<9; j++) {
+                            if (j == i) {
+                                sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[j] = j+1;
+                            } else {
+                                sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[j] = -1;
+                            }
+                        }
                         sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).setNumber(i+1);
-                        //sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] = true;
                         display.writeNumber(rowGuess, columnGuess, i+1);
                         isGuessed = true;
                     }
@@ -207,22 +208,28 @@ public class FindSolution {
         return -1;
     }
 
-    private void checkRows(int row, int column, int othersNumber, int i) {
-        othersNumber = sudokuBoard.getRows().get(i).getElements().get(column).getNumber();
-        if (othersNumber != -1 && i != row) {
-            if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
-                sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
-                wasSomethingDoneDuringThisIteration = true;
+    private void checkRows(int row, int column) {
+        int othersNumber;
+        for (int i=0; i<9; i++) {
+            othersNumber = sudokuBoard.getRows().get(i).getElements().get(column).getNumber();
+            if (othersNumber != -1 && i != row) {
+                if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
+                    sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                    wasSomethingDoneDuringThisIteration = true;
+                }
             }
         }
     }
 
-    private void checkColumns(int row, int column, int othersNumber, int i) {
-        othersNumber = sudokuBoard.getRows().get(row).getElements().get(i).getNumber();
-        if (othersNumber != -1 && i != column) {
-            if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
-                sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
-                wasSomethingDoneDuringThisIteration = true;
+    private void checkColumns(int row, int column) {
+        int othersNumber;
+        for (int i=0; i<9; i++) {
+            othersNumber = sudokuBoard.getRows().get(row).getElements().get(i).getNumber();
+            if (othersNumber != -1 && i != column) {
+                if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
+                    sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                    wasSomethingDoneDuringThisIteration = true;
+                }
             }
         }
     }
@@ -261,7 +268,6 @@ public class FindSolution {
         int[] impossibleNumbers = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
         for (int i=0; i<9; i++) {
             for (int j=0; j<9; j++) {
-                //Block
                 boolean sameBlock = checkBlockIndex(i, j) == blockIndex;
                 if ((sameBlock && !(i == row && j == column)) ||
                         (column == j && row != i) ||

@@ -27,7 +27,6 @@ public class SudokuBoard extends Prototype<SudokuBoard> {
                 SudokuElement clonedElement = new SudokuElement();
                 clonedElement.setNumber(element.getNumber());
                 clonedElement.setPossibleNumbers(element.getPossibleNumbers());
-                //clonedElement.setWasGuessed(element.getWasGuessed());
                 clonedRow.getElements().add(clonedElement);
             }
             clonedSudokuBoard.rows.add(clonedRow);

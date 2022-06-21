@@ -7,7 +7,7 @@ public class Questions {
     public static boolean sudokuUnsolvable() {
         boolean answered = false;
         while (!answered) {
-            System.out.println("Sudoku is unsolvable!!!");
+            System.out.println("Sudoku is unsolvable or is too hard!!!");
             String answer = choice();
             if (answer.equals("1")) {
                 return true;
