@@ -23,14 +23,14 @@ public class FindSolution {
 
     private boolean singleGameLoop() {
         boolean solved = false;
-        for (int i=0; i<10; i++) {
-            solved = false; //TODO TO DELETE
+    //    for (int i=0; i<10; i++) {
+    //        solved = false; //TODO TO DELETE
             while (!solved && !unsolvable) {
                 wasSomethingDoneDuringThisIteration = false;
-                solved = !elementsIterate();
+                solved = elementsIterate();
                 //TODO solved = elementsIterate(); DELETE FOR
             }
-        }
+    //    }
 
         System.out.println(display);
         return solved;
@@ -67,9 +67,14 @@ public class FindSolution {
 
                     if (isCollision(rowLoop, columnLoop, blockIndex)) {
                         if (madeCopy) {
-                            makeBoardCopy(sudokuBoard, deepCopyBoard);
-                            makeDisplayCopy(display, deepCopyDisplay);
-                            madeCopy = false;
+                            try {
+                                sudokuBoard = deepCopyBoard.deepCopy();
+                                display = deepCopyDisplay.deepCopy();
+                            } catch (CloneNotSupportedException e) {
+                                System.out.println(e);
+                            }
+                            guess();
+                            //madeCopy = false;
                         } else {
                             unsolvable = true;
                         }
@@ -93,20 +98,10 @@ public class FindSolution {
                 } catch (CloneNotSupportedException e) {
                     System.out.println(e);
                 }
-                //makeBoardCopy(deepCopyBoard, sudokuBoard);
-                makeDisplayCopy(deepCopyDisplay, display);
                 madeCopy = true;
                 guess();
-                deepCopyBoard.getRows().get(0).getElements().get(0).setNumber(5); //TODO Fix board deep clone - display clone wor correctly
-                System.out.println(sudokuBoard.getRows().get(0).getElements().get(0).getNumber());
             } else {
-                //TODO Guess
-                //If someone's possible table in range have only guessed number
-                //back-up and quess other number [Delete guessed number before from possible numbers]
-                //madeCopy = false;
-                //Else
-                //clone to secondClone
-                //Guess other field
+                guessAgain();
             }
 
         }
@@ -124,9 +119,17 @@ public class FindSolution {
                         (column == j && row != i) ||
                         (column != j && row == i)) {
                     number1 = sudokuBoard.getRows().get(row).getElements().get(column).getNumber();
-                    number2 = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
-                    if (number1 == number2 && number1 != -1) {
-                        return true;
+//                    number2 = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
+//
+//                    if (number1 == number2 && number1 != -1) {
+//                        return true;
+//                    }
+
+                    if (isTableHavingOnlyOneItem(i, j)) {
+                        int availableNumber = findAvailableNumber(i, j);
+                        if (availableNumber == number1 && number1 != -1) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -156,19 +159,24 @@ public class FindSolution {
         }
     }
 
-    private void makeBoardCopy(SudokuBoard clone, SudokuBoard cloned) {
-        try {
-            clone = cloned.deepCopy();
-        } catch (CloneNotSupportedException e) {
-            System.out.println(e);
+    private void guessAgain() {
+        boolean isGuessed = false;
+        for (int rowGuess = 0; rowGuess < 9; rowGuess++) {
+            for (int columnGuess = 0; columnGuess < 9; columnGuess++) {
+                for (int i=0; i<9; i++) {
+                    if (isEmpty(rowGuess, columnGuess) && !isGuessed &&
+                            sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] == i+1) {
+                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] = -1;
+                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).setNumber(i+1);
+                        //sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] = true;
+                        display.writeNumber(rowGuess, columnGuess, i+1);
+                        isGuessed = true;
+                    }
+                }
+            }
         }
-    }
-
-    private void makeDisplayCopy(Display clone, Display cloned) {
-        try {
-            clone = cloned.deepCopy();
-        } catch (CloneNotSupportedException e) {
-            System.out.println(e);
+        if (!isGuessed) {
+            unsolvable = true;
         }
     }
 
