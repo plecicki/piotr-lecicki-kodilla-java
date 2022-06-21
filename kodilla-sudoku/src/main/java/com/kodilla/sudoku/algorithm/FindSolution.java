@@ -23,11 +23,15 @@ public class FindSolution {
 
     private boolean singleGameLoop() {
         boolean solved = false;
-        while (!solved && !unsolvable) {
-            wasSomethingDoneDuringThisIteration = false;
-            solved = elementsIterate();
-            //TODO solved = elementsIterate();
+        for (int i=0; i<10; i++) {
+            solved = false; //TODO TO DELETE
+            while (!solved && !unsolvable) {
+                wasSomethingDoneDuringThisIteration = false;
+                solved = !elementsIterate();
+                //TODO solved = elementsIterate(); DELETE FOR
+            }
         }
+
         System.out.println(display);
         return solved;
     }
@@ -72,11 +76,10 @@ public class FindSolution {
                     }
                 } else {
                     for (int i=0; i<9; i++) {
-                        if (sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getPossibleNumbers()[i] !=
-                                sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getNumber() + 1) {
+                        if (sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getNumber() != i + 1) {
                             sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getPossibleNumbers()[i] = -1;
                         } else {
-                            sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getPossibleNumbers()[i] = i + 1;
+                            sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).getPossibleNumbers()[i] = i+1;
                         }
                     }
                 }
@@ -84,10 +87,18 @@ public class FindSolution {
         }
         if (!wasSomethingDoneDuringThisIteration) {
             if (!madeCopy) {
-                makeBoardCopy(deepCopyBoard, sudokuBoard);
+                try {
+                    deepCopyBoard = sudokuBoard.deepCopy();
+                    deepCopyDisplay = display.deepCopy();
+                } catch (CloneNotSupportedException e) {
+                    System.out.println(e);
+                }
+                //makeBoardCopy(deepCopyBoard, sudokuBoard);
                 makeDisplayCopy(deepCopyDisplay, display);
                 madeCopy = true;
                 guess();
+                deepCopyBoard.getRows().get(0).getElements().get(0).setNumber(5); //TODO Fix board deep clone - display clone wor correctly
+                System.out.println(sudokuBoard.getRows().get(0).getElements().get(0).getNumber());
             } else {
                 //TODO Guess
                 //If someone's possible table in range have only guessed number
@@ -114,7 +125,7 @@ public class FindSolution {
                         (column != j && row == i)) {
                     number1 = sudokuBoard.getRows().get(row).getElements().get(column).getNumber();
                     number2 = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
-                    if (number1 == number2) {
+                    if (number1 == number2 && number1 != -1) {
                         return true;
                     }
                 }
@@ -191,16 +202,20 @@ public class FindSolution {
     private void checkRows(int row, int column, int othersNumber, int i) {
         othersNumber = sudokuBoard.getRows().get(i).getElements().get(column).getNumber();
         if (othersNumber != -1 && i != row) {
-            sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
-            wasSomethingDoneDuringThisIteration = true;
+            if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
+                sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                wasSomethingDoneDuringThisIteration = true;
+            }
         }
     }
 
     private void checkColumns(int row, int column, int othersNumber, int i) {
         othersNumber = sudokuBoard.getRows().get(row).getElements().get(i).getNumber();
         if (othersNumber != -1 && i != column) {
-            sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
-            wasSomethingDoneDuringThisIteration = true;
+            if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
+                sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                wasSomethingDoneDuringThisIteration = true;
+            }
         }
     }
 
@@ -224,8 +239,10 @@ public class FindSolution {
                 if (sameBlock && !(i == row && j == column)) {
                     int othersNumber = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
                     if (othersNumber != -1) {
-                        sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
-                        wasSomethingDoneDuringThisIteration = true;
+                        if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] != -1) {
+                            sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[othersNumber - 1] = -1;
+                            wasSomethingDoneDuringThisIteration = true;
+                        }
                     }
                 }
             }
@@ -259,8 +276,10 @@ public class FindSolution {
         if (loopCounter == 1) {
             for (int k=0; k<9; k++) {
                 if (impossibleNumbers[k] != -1) {
-                    sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[k] = -1;
-                    wasSomethingDoneDuringThisIteration = true;
+                    if (sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[k] != -1) {
+                        sudokuBoard.getRows().get(row).getElements().get(column).getPossibleNumbers()[k] = -1;
+                        wasSomethingDoneDuringThisIteration = true;
+                    }
                 }
             }
         }

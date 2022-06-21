@@ -24,8 +24,8 @@ public class SudokuElement {
         return possibleNumbers;
     }
 
-    public void setPossibleNumbers(int impossibleNumber) {
-        this.possibleNumbers[impossibleNumber - 1] = EMPTY;
+    public void setPossibleNumbers(int[] possibleNumbers) {
+        this.possibleNumbers = possibleNumbers;
     }
 
     public boolean[] getWasGuessed() {

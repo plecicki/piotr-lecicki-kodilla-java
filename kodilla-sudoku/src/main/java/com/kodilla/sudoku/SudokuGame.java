@@ -22,16 +22,16 @@ public class SudokuGame {
                 SudokuGame sudokuGame = new SudokuGame();
                 SudokuBoard sudokuBoard = new SudokuBoard();
                 Display display = new Display(sudokuBoard.toString());
+
                 FindSolution findSolution = new FindSolution();
                 gameFinished = sudokuGame.resolveSudoku(sudokuBoard, display, findSolution);
                 unsolvable = findSolution.isUnsolvable();
             }
-            //TODO Unsolvable = ...
             if (gameFinished) {
                 gameFinished = !Questions.sudokuFinished();
                 enteredAllNumbers = false;
             }
-            if (unsolvable && !gameFinished) {
+            if (unsolvable) {
                 unsolvable = !Questions.sudokuUnsolvable();
                 enteredAllNumbers = false;
             }

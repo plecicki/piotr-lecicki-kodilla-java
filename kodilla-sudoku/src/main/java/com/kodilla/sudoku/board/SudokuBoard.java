@@ -1,5 +1,7 @@
 package com.kodilla.sudoku.board;
 
+import com.kodilla.sudoku.SudokuGame;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,13 @@ public class SudokuBoard extends Prototype<SudokuBoard> {
         for (SudokuRow row : rows) {
             SudokuRow clonedRow = new SudokuRow();
             for(SudokuElement element : row.getElements()) {
-                clonedRow.getElements().add(element);
+                //TODO Debug
+                SudokuElement clonedElement = new SudokuElement();
+                clonedElement.setNumber(element.getNumber());
+                clonedElement.setPossibleNumbers(element.getPossibleNumbers());
+                clonedElement.setWasGuessed(element.getWasGuessed());
+
+                clonedRow.getElements().add(clonedElement);
             }
             clonedSudokuBoard.getRows().add(row);
         }
