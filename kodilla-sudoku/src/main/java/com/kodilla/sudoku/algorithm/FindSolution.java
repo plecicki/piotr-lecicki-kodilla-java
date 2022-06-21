@@ -25,7 +25,7 @@ public class FindSolution {
         boolean solved = false;
         while (!solved && !unsolvable) {
             wasSomethingDoneDuringThisIteration = false;
-            solved = !elementsIterate();
+            solved = elementsIterate();
             //TODO solved = elementsIterate();
         }
         System.out.println(display);
@@ -45,7 +45,6 @@ public class FindSolution {
                         checkRows(rowLoop, columnLoop, othersNumber, i);
                         checkColumns(rowLoop, columnLoop, othersNumber, i);
                     }
-                    //Check block:
                     int blockIndex = checkBlockIndex(rowLoop, columnLoop);
                     checkBlock(rowLoop, columnLoop, blockIndex);
 
@@ -60,6 +59,16 @@ public class FindSolution {
                         sudokuBoard.getRows().get(rowLoop).getElements().get(columnLoop).setNumber(elementNumber);
                         display.writeNumber(rowLoop, columnLoop, elementNumber);
                         wasSomethingDoneDuringThisIteration = true;
+                    }
+
+                    if (isCollision(rowLoop, columnLoop, blockIndex)) {
+                        if (madeCopy) {
+                            makeBoardCopy(sudokuBoard, deepCopyBoard);
+                            makeDisplayCopy(display, deepCopyDisplay);
+                            madeCopy = false;
+                        } else {
+                            unsolvable = true;
+                        }
                     }
                 } else {
                     for (int i=0; i<9; i++) {
@@ -94,15 +103,37 @@ public class FindSolution {
         return isEveryElementFilled;
     }
 
+    private boolean isCollision(int row, int column, int blockIndex) {
+        int number1 = 0;
+        int number2 = 0;
+        for (int i=0; i<9; i++) {
+            for (int j=0; j<9; j++) {
+                boolean sameBlock = checkBlockIndex(i, j) == blockIndex;
+                if ((sameBlock && !(i == row && j == column)) ||
+                        (column == j && row != i) ||
+                        (column != j && row == i)) {
+                    number1 = sudokuBoard.getRows().get(row).getElements().get(column).getNumber();
+                    number2 = sudokuBoard.getRows().get(i).getElements().get(j).getNumber();
+                    if (number1 == number2) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private void guess() {
         boolean isGuessed = false;
         for (int rowGuess = 0; rowGuess < 9; rowGuess++) {
             for (int columnGuess = 0; columnGuess < 9; columnGuess++) {
                 for (int i=0; i<9; i++) {
                     if (isEmpty(rowGuess, columnGuess) && !isGuessed &&
-                            sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] == i+1) {
+                            sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] == i+1 &&
+                            sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] == false) {
                         sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getPossibleNumbers()[i] = -1;
                         sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).setNumber(i+1);
+                        sudokuBoard.getRows().get(rowGuess).getElements().get(columnGuess).getWasGuessed()[i] = true;
                         display.writeNumber(rowGuess, columnGuess, i+1);
                         isGuessed = true;
                     }

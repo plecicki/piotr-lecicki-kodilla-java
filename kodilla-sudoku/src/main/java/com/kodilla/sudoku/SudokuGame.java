@@ -31,7 +31,7 @@ public class SudokuGame {
                 gameFinished = !Questions.sudokuFinished();
                 enteredAllNumbers = false;
             }
-            if (unsolvable) {
+            if (unsolvable && !gameFinished) {
                 unsolvable = !Questions.sudokuUnsolvable();
                 enteredAllNumbers = false;
             }
