@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @SpringBootTest
 public class InvoiceDaoTestSuite {
@@ -42,7 +43,22 @@ public class InvoiceDaoTestSuite {
         int id = invoice1.getId();
 
         //Then
+        Optional<Invoice> invoiceFromDB = invoiceDao.findById(id);
+
         Assertions.assertNotEquals(0, id);
+        Assertions.assertTrue(invoiceFromDB.isPresent());
+        for(int i=0; i<3; i++) {
+            Assertions.assertEquals("Bike", invoiceFromDB.get().getItems().get(i).getProduct().getName());
+        }
+        Assertions.assertEquals(0, new BigDecimal(6500).compareTo(invoiceFromDB.get().getItems().get(0).getPrice()));
+        Assertions.assertEquals(0, new BigDecimal(3000).compareTo(invoiceFromDB.get().getItems().get(1).getPrice()));
+        Assertions.assertEquals(0, new BigDecimal(20000).compareTo(invoiceFromDB.get().getItems().get(2).getPrice()));
+        Assertions.assertEquals(5, invoiceFromDB.get().getItems().get(0).getQuantity());
+        Assertions.assertEquals(1, invoiceFromDB.get().getItems().get(1).getQuantity());
+        Assertions.assertEquals(10, invoiceFromDB.get().getItems().get(2).getQuantity());
+        Assertions.assertEquals(0, new BigDecimal(5000).compareTo(invoiceFromDB.get().getItems().get(0).getValue()));
+        Assertions.assertEquals(0, new BigDecimal(2000).compareTo(invoiceFromDB.get().getItems().get(1).getValue()));
+        Assertions.assertEquals(0, new BigDecimal(15000).compareTo(invoiceFromDB.get().getItems().get(2).getValue()));
 
         //CleanUp
         invoiceDao.deleteById(id);
