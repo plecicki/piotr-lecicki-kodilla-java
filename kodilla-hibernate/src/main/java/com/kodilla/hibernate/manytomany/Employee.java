@@ -8,6 +8,13 @@ import java.util.List;
         name = "Employee.retrieveEmployeesWithThatLastname",
         query = "FROM Employee WHERE lastname = :LASTNAME"
 )
+@NamedNativeQuery(
+        name = "Employee.retrieveEmployeesByShortPartOfName",
+        query = "SELECT * FROM EMPLOYEES " +
+                "WHERE FIRSTNAME LIKE CONCAT(:NAME, '%')" +
+                "OR LASTNAME LIKE CONCAT(:NAME, '%')",
+        resultClass = Employee.class
+)
 @Entity
 @Table(name = "EMPLOYEES")
 public class Employee {

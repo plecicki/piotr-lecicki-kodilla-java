@@ -11,6 +11,12 @@ import java.util.List;
                 "WHERE LEFT(COMPANY_NAME, 3) = :NAME",
         resultClass = Company.class
 )
+@NamedNativeQuery(
+        name = "Company.retrieveCompaniesByShortPartOfName",
+        query = "SELECT * FROM COMPANIES " +
+                "WHERE COMPANY_NAME LIKE CONCAT(:NAME, '%')",
+        resultClass = Company.class
+)
 @Entity
 @Table(name = "COMPANIES")
 public class Company {
